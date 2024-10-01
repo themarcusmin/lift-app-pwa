@@ -11,9 +11,11 @@ function someFunc() {
 </script>
 
 <template>
-  <div>lets pretend this is workout home view-transition-name</div>
-  <div>we may choose between PPL</div>
-  <button class="border bg-red-100 py-5 px-10" @click="someFunc">Push</button>
+  <div class="bg-green-200 h-screen z-40 overflow-hidden">
+    <div>lets pretend this is workout home view-transition-name</div>
+    <div>we may choose between PPL</div>
+    <button class="border bg-red-100 py-5 px-10" @click="someFunc">Push</button>
+  </div>
   <!-- <RouterLink to="/program/2">Pull</RouterLink>
   <RouterLink to="/program/3">Leg</RouterLink> -->
 </template>
