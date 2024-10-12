@@ -84,7 +84,7 @@ const { direction } = useSwipe(target, {
             router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: 1 } })
           })
         } else {
-          router.push({ name: "WORKOUT_LOG_OVERVIEW", params: { logid: 1 } })
+          router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: 1 } })
         }
       }
       if (currLogID.value < 3) {
@@ -127,28 +127,6 @@ function goToPage(pathx) {
     ref="target"
     class="z-0 fixed right-0 top-0 h-screen bg-transparent disabled-animate w-16 flex flex-col items-center justify-center space-y-4"
   >
-    <!-- <button @click="goToOverview">A</button> -->
-    <!-- <router-link
-      class="w-5 h-5 bg-gray-500"
-      to="/workout/log"
-      :class="{
-        'bg-white transition ease-in-out': route.path === '/workout/log',
-        'bg-gray-500': route.path !== '/workout/log'
-      }"
-      @touchend="goToMain"
-      to="/workout/log"
-
-    /> -->
-    <!-- <RouterLink to="/workout/log" class="grid grid-cols-2 grid-rows-2 gap-1 w-5 h-5">
-      <div
-        v-for="index in 4"
-        :key="index"
-        :class="{
-          'bg-white transition ease-in-out': route.path === '/workout/log',
-          'bg-gray-500': route.path !== '/workout/log'
-        }"
-      ></div>
-    </RouterLink> -->
     <router-link to="/workout/log" class="grid grid-cols-2 grid-rows-2 gap-1 w-5 h-5">
       <div
         v-for="index in 4"

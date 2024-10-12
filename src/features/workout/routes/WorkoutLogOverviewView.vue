@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import { useSwipeStore } from "@/stores/swipe"
+import { storeToRefs } from "pinia"
+
+const swipeStore = useSwipeStore()
+const { swipeAnimation } = storeToRefs(swipeStore)
+
+import router from "@/router"
+import SideNav from "@/components/Navigation/SideNav.vue"
+import { ref } from "vue"
+
 const exercises = ["Push Ups", "Squats", "Lunges", "Plank", "Burpees", "Jumping Jacks", "Deadlifts"]
 
-const workoutOverview = { path: "/program/0" }
-const workoutOverview2 = { path: "/program/1" }
-
-const logExercises = [
+const logExercises = ref([
   { name: "Push ups", path: "/workout/log/1" },
   { name: "Squats", path: "/workout/log/2" },
   { name: "Lunges", path: "/workout/log/3" }
-]
-
-import { useRoute } from "vue-router"
-import router from "@/router"
-import SideNav from "@/components/Navigation/SideNav.vue"
+])
 
 function goTo1Func() {
   //   let nextProgramID = Number(route.params.programid) + 1
@@ -29,34 +32,45 @@ function goTo1Func() {
     router.push({ name: "PROGRAM_DETAIL", params: { programid: 1 } })
   })
 }
-</script>
 
+function handleAddExercise() {
+  logExercises.value.push({ name: "Bicep Curls", path: "/workout/log/4" })
+}
+</script>
 <template>
   <div class="relative">
-    <SideNav />
-    <div class="flex flex-col items-center justify-center h-screen">
-      <h1 class="text-2xl font-bold mb-6">Log Overview Grid</h1>
-      <div class="grid grid-cols-2 gap-3 w-80">
-        <router-link
-          v-for="(logExercise, index) in logExercises"
-          :key="index"
-          :to="logExercise.path"
-          class="z-40 custom-transform flex items-center justify-center h-32 w-100 bg-blue-500 text-white font-bold rounded-lg shadow-lg"
-        >
-          {{ logExercise.name }}
-        </router-link>
+    <div
+      class="h-screen px-10 py-12 flex flex-col gap-6 text-white bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-400"
+      :class="[swipeAnimation]"
+    >
+      <div class="flex flex-col items-center justify-center h-screen">
+        <h1 class="text-2xl font-bold mb-6">Push Day</h1>
+        <div class="flex flex-col gap-4 w-80">
+          <router-link
+            v-for="(logExercise, index) in logExercises"
+            :key="index"
+            :to="logExercise.path"
+            class="z-40 custom-transform flex items-center justify-center h-12 w-72 border-2 border-gray-400 rounded-full"
+          >
+            {{ logExercise.name }}
+          </router-link>
+          <button
+            @click="handleAddExercise"
+            class="custom-transform h-12 w-72 border-2 border-gray-400 rounded-full"
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
+    <SideNav />
   </div>
 </template>
 
 <style>
 .custom-transform {
   animation-name: grow;
-  animation-duration: 1s;
-  /* transition:
-    transform 0.5s ease,
-    opacity 0.5s ease; */
+  animation-duration: 1.2s;
 }
 
 @keyframes grow {
@@ -70,18 +84,6 @@ function goTo1Func() {
   }
 }
 
-/* ::view-transition-old(root) { */
-/* animation: 0.5s ease-in both move-out; */
-/* animation: scaleOut 0.5s forwards; */
-/* animation: 3s scaleOut; */
-/* } */
-
-/* ::view-transition-new(root) { */
-/* animation: 0.5s ease-in both move-in; */
-/* animation: scaleIn 0.5s forwards; */
-/* animation: scale-up-center 2s ease-out 0.2s; */
-/* } */
-
 @keyframes scale-up-center {
   0% {
     transform: scale(0.5); /* 0 */
@@ -92,5 +94,33 @@ function goTo1Func() {
     /* opacity: 1; */
   }
 }
+
+/* swipe up */
+@keyframes move-out-up {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes move-in-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0%);
+  }
+}
+
+::view-transition-old(swipe-animate-up) {
+  animation: 0.8s ease-in both move-out-up;
+}
+
+::view-transition-new(swipe-animate-up) {
+  animation: 0.8s ease-in both move-in-up;
+}
 </style>
-<!-- max-w-4xl -->
