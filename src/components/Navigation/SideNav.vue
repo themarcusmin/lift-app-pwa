@@ -111,12 +111,21 @@ function goToOverview() {
   // router.push({ name: "LOG_OVERVIEW" })
   // })
 }
-</script>
 
+function goToMain() {
+  router.push({ name: "WORKOUT_LOG_OVERVIEW" })
+}
+
+function goToPage(pathx) {
+  console.log(89)
+  if (document.startViewTransition)
+    router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: 2 } })
+}
+</script>
 <template>
   <div
     ref="target"
-    class="z-0 fixed right-0 top-0 h-screen w-16 bg-gray-700 flex flex-col items-center justify-center space-y-4"
+    class="z-0 fixed right-0 top-0 h-screen bg-transparent disabled-animate w-16 flex flex-col items-center justify-center space-y-4"
   >
     <!-- <button @click="goToOverview">A</button> -->
     <!-- <router-link
@@ -126,7 +135,20 @@ function goToOverview() {
         'bg-white transition ease-in-out': route.path === '/workout/log',
         'bg-gray-500': route.path !== '/workout/log'
       }"
+      @touchend="goToMain"
+      to="/workout/log"
+
     /> -->
+    <!-- <RouterLink to="/workout/log" class="grid grid-cols-2 grid-rows-2 gap-1 w-5 h-5">
+      <div
+        v-for="index in 4"
+        :key="index"
+        :class="{
+          'bg-white transition ease-in-out': route.path === '/workout/log',
+          'bg-gray-500': route.path !== '/workout/log'
+        }"
+      ></div>
+    </RouterLink> -->
     <router-link to="/workout/log" class="grid grid-cols-2 grid-rows-2 gap-1 w-5 h-5">
       <div
         v-for="index in 4"
@@ -142,6 +164,7 @@ function goToOverview() {
       v-for="(item, index) in navItems"
       :key="index"
       :to="item.path"
+      @touchend="goToPage(item.path)"
       class="w-3 h-3 rounded-full transition-colors transition-all duration-1000 ease-in-out"
       :class="{
         'bg-white scale-150 transition ease-in-out': isActive(item.path),
@@ -151,3 +174,14 @@ function goToOverview() {
     </router-link>
   </div>
 </template>
+
+<style>
+.disabled-animate {
+  view-transition-name: disabled-animate;
+}
+
+::view-transition-old(disabled-animate),
+::view-transition-new(disabled-animate) {
+  animation-duration: 0s !important;
+}
+</style>

@@ -32,18 +32,20 @@ function goTo1Func() {
 </script>
 
 <template>
-  <SideNav />
-  <div class="flex flex-col items-center justify-center h-screen">
-    <h1 class="text-2xl font-bold mb-6">Log Overview Grid</h1>
-    <div class="grid grid-cols-2 gap-3 w-80">
-      <router-link
-        v-for="(logExercise, index) in logExercises"
-        :key="index"
-        :to="logExercise.path"
-        class="z-40 custom-transform flex items-center justify-center h-32 w-100 bg-blue-500 text-white font-bold rounded-lg shadow-lg"
-      >
-        {{ logExercise.name }}
-      </router-link>
+  <div class="relative">
+    <SideNav />
+    <div class="flex flex-col items-center justify-center h-screen">
+      <h1 class="text-2xl font-bold mb-6">Log Overview Grid</h1>
+      <div class="grid grid-cols-2 gap-3 w-80">
+        <router-link
+          v-for="(logExercise, index) in logExercises"
+          :key="index"
+          :to="logExercise.path"
+          class="z-40 custom-transform flex items-center justify-center h-32 w-100 bg-blue-500 text-white font-bold rounded-lg shadow-lg"
+        >
+          {{ logExercise.name }}
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
