@@ -6,14 +6,13 @@ import EditIcon from "@/assets/editIcon.svg"
 import DeleteIcon from "@/assets/trashIcon.svg"
 import ChevronDownIcon from "@/assets/chevronDown.svg"
 import ChevronRightIcon from "@/assets/chevronRight.svg"
-// import { ChevronDownIcon } from "@heroicons/vue/24/outline"
-
-const programDayName = "Day 1"
+import Modal from "@/components/Modal/Modal.vue"
 
 const program = ref({
   programName: "Andy's Program",
   programDay: [
     {
+      temp_id: 1101,
       name: "Push Day",
       isHidden: false,
       programExercise: [
@@ -64,6 +63,7 @@ const program = ref({
       ]
     },
     {
+      temp_id: 1461,
       name: "Pull Day",
       isHidden: false,
       programExercise: [
@@ -93,10 +93,6 @@ const program = ref({
     }
   ]
 })
-
-function toggleVisibility(prop: any) {
-  prop.isHidden = !prop.isHidden
-}
 
 function handleAddProgramDay() {
   // Generate the next program day name
@@ -164,9 +160,100 @@ function handleDeleteProgramExercise(dayIndex, exerciseIndex) {
 function handleDeleteProgramDay(dayIndex) {
   program.value.programDay.splice(dayIndex, 1)
 }
+
+function toggleVisibility(prop: any) {
+  prop.isHidden = !prop.isHidden
+}
+
+import { useModalStore } from "@/stores/modal"
+
+const modalStore = useModalStore()
+const { openModal, closeModal } = modalStore
+
+const exercises = [
+  {
+    muscleGroup: "Chest",
+    categoryExercises: [
+      { exerciseID: 101, name: "Barbell Bench Press", format: "reps and weight" },
+      { exerciseID: 102, name: "Dumbbell Bench Press", format: "reps and weight" },
+      { exerciseID: 103, name: "Machine Bench Press", format: "reps and weight" },
+      { exerciseID: 104, name: "Pec Deck", format: "reps and weight" }
+    ]
+  },
+  {
+    muscleGroup: "Leg",
+    categoryExercises: [{ exerciseID: 105, name: "Squat", format: "reps and weight" }]
+  }
+]
+
+// https://colorkit.co/palette/eb3040-eb6949-eb8d27-988921-85ab71-5e8d6f-58b69e-c87499-cb4d8e/
+function getCategoryBgColor(category: string) {
+  switch (category) {
+    case "Chest":
+      return "bg-orangeRed" // Example: red for chest
+    case "Leg":
+      return "bg-pastelBlue" // Example: green for legs
+    default:
+      return "bg-gray-400" // Default color if no match
+  }
+}
+
+const selectedProgramDayID = ref<number | null>(null)
+
+function handleAddExercise(temp_id) {
+  selectedProgramDayID.value = temp_id
+  openModal()
+}
+
+function handleSelectExercise(exercise) {
+  // Find the program day with the selected temp_id
+  const dayToUpdate = program.value.programDay.find(
+    (day) => day.temp_id === selectedProgramDayID.value
+  )
+
+  if (dayToUpdate) {
+    const newExercise = {
+      id: Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000, // Generate a random ID
+      exerciseID: exercise.exerciseID,
+      exerciseName: exercise.name,
+      format: exercise.format,
+      isHidden: false,
+      restTime: 120,
+      programEntries: []
+    }
+
+    // Push the new exercise into the programExercise array
+    dayToUpdate.programExercise.push(newExercise)
+
+    // Close the modal
+    closeModal()
+  }
+}
 </script>
 
 <template>
+  <Modal
+    title="Add Exercise"
+    customClass="h-screen w-full mt-40 bg-secondaryBg border-2 border-neutral-600 text-white rounded-xl"
+  >
+    <div v-for="(exerciseGroup, categoryIndex) in exercises" :key="categoryIndex">
+      <div
+        :class="
+          clsx('py-3 px-6 rounded-lg font-semibold', getCategoryBgColor(exerciseGroup.muscleGroup))
+        "
+      >
+        {{ exerciseGroup.muscleGroup }}
+      </div>
+      <div v-for="exercise in exerciseGroup.categoryExercises" :key="exercise.exerciseID">
+        <button
+          @click="handleSelectExercise(exercise)"
+          class="w-full py-4 px-6 border-b-2 border-neutral-700 flex items-center"
+        >
+          {{ exercise.name }}
+        </button>
+      </div>
+    </div>
+  </Modal>
   <div class="min-h-screen z-40 overflow-hidden text-white py-12 px-6 bg-primaryBg">
     <div
       class="flex flex-col gap-4 border-b-2 border-neutral-500 focus-within:border-primaryPurple py-4"
@@ -284,6 +371,7 @@ function handleDeleteProgramDay(dayIndex) {
         </div>
         <!-- Add Exercise -->
         <button
+          @click="handleAddExercise(day.temp_id)"
           :class="
             clsx('w-fit text-start text-sm text-primaryPurple font-semibold underline', {
               hidden: day.isHidden
