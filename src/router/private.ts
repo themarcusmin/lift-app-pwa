@@ -3,8 +3,8 @@ import MainLayout from "@/components/Layouts/MainLayout.vue"
 const ProgramHomeView = () => import("@/features/program/routes/ProgramHomeView.vue")
 
 const WorkoutHomeView = () => import("@/features/workout/routes/WorkoutHomeView.vue")
-const WorkoutLogOverviewView = () => import("@/features/workout/routes/WorkoutLogOverviewView.vue")
-const WorkoutLogDetailView = () => import("@/features/workout/routes/WorkoutLogDetailView.vue")
+const WorkoutOverviewView = () => import("@/features/workout/routes/WorkoutOverviewView.vue")
+const WorkoutDetailView = () => import("@/features/workout/routes/WorkoutDetailView.vue")
 
 const ProfileView = () => import("@/features/profile/routes/ProfileView.vue")
 
@@ -23,13 +23,13 @@ export const privatePaths = [
   {
     path: "/workout/log",
     name: WORKOUT_OVERVIEW,
-    component: WorkoutLogOverviewView,
+    component: WorkoutOverviewView,
     meta: { hideNav: true }
   },
   {
     path: "/workout/log/:logid",
     name: WORKOUT_DETAIL,
-    component: WorkoutLogDetailView,
+    component: WorkoutDetailView,
     meta: { hideNav: true }
   },
   {
