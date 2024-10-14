@@ -19,7 +19,7 @@ import ProfileIcon from "@/assets/profileIcon.svg"
 import { useRoute } from "vue-router"
 import router from "@/router"
 import { LANDING } from "@/router/public"
-import { HOME } from "@/router/private"
+import { PROFILE, PROGRAM_HOME, WORKOUT_HOME } from "@/router/private"
 // import logo from '@/assets/logo.svg'
 
 // const user = useCurrentUser()!
@@ -31,82 +31,33 @@ async function logout() {
   router.push({ name: LANDING })
 }
 
-// if (user) {
-//   console.log('aasasf', user)
-// }
+import { useNavStore } from "@/stores/nav"
+import { storeToRefs } from "pinia"
 
-// defineProps({
-//   display: {
-//     type: Boolean,
-//     default: true
-//   }
-// })
-// :class="{
-//       hidden: !display
-//     }"
+const navStore = useNavStore()
+const { isHidden } = storeToRefs(navStore)
 
 const navItems = [
   {
     to: "/program",
     icon: ProgramIcon,
-    label: "Program"
+    label: "Program",
+    routeName: PROGRAM_HOME
   },
   {
     to: "/workout",
     icon: DumbbellIcon,
-    label: "Workout"
+    label: "Workout",
+    routeName: WORKOUT_HOME
   },
   {
     to: "/profile",
     icon: ProfileIcon,
-    label: "Profile"
+    label: "Profile",
+    routeName: PROFILE
   }
 ]
 
-// Store the last click event
-// let lastClick;
-// addEventListener('click', event => (lastClick = event));
-
-// function spaNavigate(data) {
-//   // Fallback for browsers that don't support this API:
-//   if (!document.startViewTransition) {
-//     updateTheDOMSomehow(data);
-//     return;
-//   }
-
-//   // Get the click position, or fallback to the middle of the screen
-//   const x = lastClick?.clientX ?? innerWidth / 2;
-//   const y = lastClick?.clientY ?? innerHeight / 2;
-//   // Get the distance to the furthest corner
-//   const endRadius = Math.hypot(
-//     Math.max(x, innerWidth - x),
-//     Math.max(y, innerHeight - y)
-//   );
-
-//   // Create a transition:
-//   const transition = document.startViewTransition(() => {
-//     updateTheDOMSomehow(data);
-//   });
-
-//   // Wait for the pseudo-elements to be created:
-//   transition.ready.then(() => {
-//     // Animate the root's new view
-//     document.documentElement.animate(
-//       {
-//         clipPath: [
-//           \`circle(0 at ${x}px ${y}px)\`,
-//           \`circle(${endRadius}px at ${x}px ${y}px)\`,
-//         ],
-//       },
-//       {
-//         duration: 500,
-//         easing: 'ease-in',
-//         // Specify which pseudo-element to animate
-//         pseudoElement: '::view-transition-new(root)',
-//       }
-//     );
-//   });
-// }
 function createRipple(event: MouseEvent) {
   // Create a span element for the ripple
   const ripple = document.createElement("span")
@@ -132,14 +83,24 @@ function createRipple(event: MouseEvent) {
     ripple.remove()
   }, 600) // Match this duration with your CSS animation duration
 }
-</script>
 
+function getFill(routeName: string) {
+  return route.name === routeName ? "fill-purple-500" : "fill-neutral-400"
+}
+
+function getTextColor(routeName: string) {
+  return route.name === routeName ? "text-purple-500" : "text-neutral-400"
+}
+</script>
 <template>
   <Disclosure
     as="nav"
-    class="bg-gradient-to-b from-slate-900 via-gray-700 to-gray-500 shadow fixed bottom-0 left-0 right-0 w-full rounded-t-lg"
+    class="bg-neutral-800 shadow fixed bottom-0 left-0 right-0 w-full rounded-t-lg"
+    :class="{
+      hidden: isHidden
+    }"
   >
-    <div class="overflow-hidden flex h-20 w-full text-white">
+    <div class="overflow-hidden flex h-24 w-full text-white">
       <RouterLink
         as="button"
         @click="createRipple($event)"
@@ -148,11 +109,12 @@ function createRipple(event: MouseEvent) {
         :to="navItem.to"
         class="ripple-animate flex flex-col flex-grow justify-center items-center"
       >
-        <component :is="navItem.icon" class="w-10 h-10 fill-red-500" />
-        <!-- <div v-html="navItem.icon" class="w-10 h-10" /> -->
-        <!-- <ProfileIcon /> -->
-        <!-- <img :src="navItem.icon" class="w-10 fill-red-400" /> -->
-        <div class="text-xs">{{ navItem.label }}</div>
+        <component
+          :is="navItem.icon"
+          class="w-10 h-10 fill-neutral-500"
+          :class="getFill(navItem.routeName)"
+        />
+        <div class="text-xs" :class="getTextColor(navItem.routeName)">{{ navItem.label }}</div>
       </RouterLink>
     </div>
   </Disclosure>
@@ -160,13 +122,11 @@ function createRipple(event: MouseEvent) {
 
 <style>
 .ripple {
-  position: absolute; /* The absolute position we mentioned earlier */
+  position: absolute;
   border-radius: 50%;
   transform: scale(0);
   animation: ripple 0.5s linear;
-  /* ripple cubic-bezier(0.6, 0.04, 0.98, 0.335) linear; */
   background-color: rgba(255, 255, 255, 0.7);
-  /* z-index: 2; */
 }
 
 @keyframes ripple {
@@ -179,6 +139,5 @@ function createRipple(event: MouseEvent) {
 .ripple-animate {
   position: relative;
   overflow: visible;
-  /* z-index: 1; */
 }
 </style>

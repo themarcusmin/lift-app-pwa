@@ -38,8 +38,10 @@ function handleNavigation(event) {
 </script>
 
 <template>
-  <div>program page: show active program, create program,</div>
-  <button @click="handleNavigation">test</button>
+  <div class="min-h-screen text-white bg-primaryBg">
+    <div>program page: show active program, create program,</div>
+    <button @click="handleNavigation">test</button>
+  </div>
 </template>
 
 <style>

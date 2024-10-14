@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import router from "@/router"
 import SideNav from "../../../components/Navigation/SideNav.vue"
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import { useSwipeStore } from "@/stores/swipe"
 import { storeToRefs } from "pinia"
 
 import AddIcon from "@/assets/addIcon.svg"
 import DeleteIcon from "@/assets/deleteIcon.svg"
+import Timer from "@/components/Timer/Timer.vue"
 
 const swipeStore = useSwipeStore()
 const { swipeAnimation } = storeToRefs(swipeStore)
@@ -18,30 +18,6 @@ const workoutLogs = ref([
   { id: 22, reps: 10, weight: 30, completed: false },
   { id: 33, reps: 10, weight: 30, completed: false }
 ])
-
-// const allocatedRestTime = 120
-const restTime = ref(0)
-const timer = ref<number | null>(null)
-
-const formattedTime = computed(() => {
-  if (restTime.value == 0) return "Ready"
-  const minutes = String(Math.floor(restTime.value / 60)).padStart(2, "0")
-  const seconds = String(restTime.value % 60).padStart(2, "0")
-  return `${minutes}:${seconds}`
-})
-
-function startTimer() {
-  // Clear any existing timer
-  clearInterval(timer.value as number)
-  restTime.value = 120 // Reset to 2 minutes
-  timer.value = setInterval(() => {
-    if (restTime.value > 0) {
-      restTime.value--
-    } else {
-      clearInterval(timer.value as number)
-    }
-  }, 1000)
-}
 
 function handleAddLog() {
   const lastLog = workoutLogs.value[workoutLogs.value.length - 1]
@@ -59,50 +35,72 @@ function handleDeleteLog(logid: number) {
   workoutLogs.value = workoutLogs.value.filter(({ id }) => id !== logid)
 }
 
+const timerRef = ref<number | null>(null)
 function handleLogComplete(logid: number) {
   workoutLogs.value.map(({ id, completed }) => {
     if (id === logid) completed = !completed
   })
-  startTimer()
+  timerRef.value.startTimer()
 }
 </script>
 
 <template>
   <div class="relative">
     <div
-      class="h-screen px-10 py-12 flex flex-col gap-6 text-white bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-400"
+      class="h-screen px-8 py-12 flex flex-col gap-6 text-white bg-primaryBg"
       :class="[swipeAnimation]"
     >
-      <p class="font-garamond text-4xl">Tricep Pushdowns</p>
-      <div class="flex gap-4">
-        <button class="bg-white text-black w-20 py-3 rounded-full">Log</button>
-        <!-- <button
-          class="bg-buttonInactive border-2 border-buttonInactiveBorder w-20 py-3 rounded-full"
+      <p
+        class="text-4xl tracking-wide bg-gradient-to-r from-fuchsia-300 via-purple-400 to-purple-500 bg-clip-text text-transparent"
+      >
+        Tricep Pushdowns
+      </p>
+      <div class="flex">
+        <button
+          class="border-0 border-b-2 border-primaryPurple text-primaryPurple font-semibold w-full py-3"
         >
+          Log
+        </button>
+        <button class="border-0 border-b-2 border-neutral-500 text-neutral-400 w-full py-3">
           Stats
-        </button> -->
-      </div>
-      <div class="flex justify-center my-5">
-        <button class="w-72 h-72 font-poiret text-7xl tracking-wider border-4 rounded-full">
-          {{ formattedTime }}
         </button>
       </div>
-      <div class="flex flex-col gap-5">
+      <div
+        class="text-primaryGray bg-secondaryBg font-semibold opacity-75 rounded-3xl p-4 flex flex-col gap-5 items-center"
+      >
         <div class="flex gap-4">
-          <div class="w-28 py-2 text-center">Reps</div>
-          <div class="w-28 py-2 text-center">Weight (kg)</div>
+          <div class="text-primaryPurple text-lg">Triceps</div>
         </div>
-        <div v-for="log in workoutLogs" :key="log.id" class="flex gap-4">
+        <div v-for="log in workoutLogs" :key="log.id" class="flex gap-4 items-center">
           <input
             type="number"
             v-model="log.reps"
-            class="w-28 py-2 rounded-full border-2 border-white focus:border-orange-400 focus:ring-0 text-center bg-transparent"
+            class="border-0 border-b-2 border-primaryGray bg-transparent w-16 py-2 focus:border-purple-400 focus:ring-0 text-center"
+            :class="{
+              'text-primaryPurple border-primaryPurple': log.completed
+            }"
           />
+          <span
+            :class="{
+              'text-primaryPurple': log.completed
+            }"
+            >reps</span
+          >
+
           <input
             type="number"
             v-model="log.weight"
-            class="w-28 py-2 rounded-full border-2 border-white focus:border-orange-400 focus:ring-0 text-center bg-transparent"
+            class="border-0 border-b-2 border-primaryGray bg-transparent w-16 py-2 focus:border-purple-400 focus:ring-0 text-center"
+            :class="{
+              'text-primaryPurple border-primaryPurple': log.completed
+            }"
           />
+          <span
+            :class="{
+              'text-primaryPurple': log.completed
+            }"
+            >kg</span
+          >
           <div class="flex items-center gap-4">
             <input
               type="checkbox"
@@ -113,23 +111,23 @@ function handleLogComplete(logid: number) {
             />
             <label
               :for="'toggle-checkbox-' + log.id"
-              class="flex items-center justify-center w-6 h-6 rounded-lg bg-transparent border-2 border-white cursor-pointer peer-checked:bg-orange-400 peer-checked:border-none"
+              class="flex items-center justify-center w-6 h-6 rounded-lg bg-transparent border-2 border-neutral-400 cursor-pointer peer-checked:bg-purple-500 peer-checked:border-none"
             >
             </label>
             <DeleteIcon class="w-7 h-7 self-center" @touchend="handleDeleteLog(log.id)" />
           </div>
         </div>
+        <div class="flex justify-center" v-if="workoutLogs.length < workoutLogsSize">
+          <AddIcon class="w-10 h-10" @touchend="handleAddLog" />
+        </div>
       </div>
-      <div class="flex justify-center" v-if="workoutLogs.length < workoutLogsSize">
-        <AddIcon class="w-10 h-10" @touchend="handleAddLog" />
-      </div>
+      <Timer ref="timerRef" />
     </div>
     <SideNav />
   </div>
 </template>
 
 <style>
-/* styles.css */
 .h-screen-minus-4rem {
   height: calc(100vh - 4rem);
 }

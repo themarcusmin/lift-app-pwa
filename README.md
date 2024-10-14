@@ -37,3 +37,6 @@ npm run build
 ```sh
 npm run lint
 ```
+
+TODO:
+pwa icon @manifest.json

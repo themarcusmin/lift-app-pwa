@@ -4,20 +4,11 @@ import { useRoute } from "vue-router"
 import router from "@/router"
 const route = useRoute() // Get the current route
 
-// Define the list of navigation items
-// const navItems = [
-//   { path: "/program/1", workoutNumber: 0 },
-//   { path: "/program/2", workoutNumber: 1 },
-//   { path: "/program/3", workoutNumber: 2 }
-// ]
-
 const navItems = [
   { name: "Push ups", path: "/workout/log/1" },
   { name: "Squats", path: "/workout/log/2" },
   { name: "Lunges", path: "/workout/log/3" }
 ]
-
-const _navItems = []
 
 // Method to check if the current route is active
 const isActive = (path) => {
@@ -28,12 +19,12 @@ import type { UseSwipeDirection } from "@vueuse/core"
 import { useSwipe } from "@vueuse/core"
 import { computed } from "vue"
 import { useSwipeStore } from "@/stores/swipe"
+import { WORKOUT_DETAIL, WORKOUT_OVERVIEW } from "@/router/private"
 
 const currLogID = computed(() => Number(route.params.logid))
 
-const { swipeUp, swipeDown } = useSwipeStore()
-
-const itemsCount = 3
+const swipeStore = useSwipeStore()
+const { swipeUp, swipeDown } = swipeStore
 
 const target = ref<HTMLElement | null>(null)
 const { direction } = useSwipe(target, {
@@ -51,10 +42,10 @@ const { direction } = useSwipe(target, {
         if (document.startViewTransition) {
           // @ts-ignore
           document.startViewTransition(() => {
-            router.push({ name: "WORKOUT_LOG_OVERVIEW" })
+            router.push({ name: WORKOUT_OVERVIEW })
           })
         } else {
-          router.push({ name: "WORKOUT_LOG_OVERVIEW" })
+          router.push({ name: WORKOUT_OVERVIEW })
         }
       }
       if (currLogID.value > 1) {
@@ -64,13 +55,14 @@ const { direction } = useSwipe(target, {
         if (document.startViewTransition) {
           // @ts-ignore
           document.startViewTransition(() => {
-            router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: newLogID } })
+            router.push({ name: WORKOUT_DETAIL, params: { logid: newLogID } })
           })
         } else {
-          router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: newLogID } })
+          router.push({ name: WORKOUT_DETAIL, params: { logid: newLogID } })
         }
       }
     } else if (direction == "up") {
+      console.log("swiping up")
       swipeUp()
       // console.log("debug swipe up ", currLogID.value)
       //   console.log("debug swipe up ", swipe.isSwipeUp)
@@ -81,10 +73,10 @@ const { direction } = useSwipe(target, {
         if (document.startViewTransition) {
           // @ts-ignore
           document.startViewTransition(() => {
-            router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: 1 } })
+            router.push({ name: WORKOUT_DETAIL, params: { logid: 1 } })
           })
         } else {
-          router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: 1 } })
+          router.push({ name: WORKOUT_DETAIL, params: { logid: 1 } })
         }
       }
       if (currLogID.value < 3) {
@@ -94,10 +86,10 @@ const { direction } = useSwipe(target, {
         if (document.startViewTransition) {
           // @ts-ignore
           document.startViewTransition(() => {
-            router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: newLogID } })
+            router.push({ name: WORKOUT_DETAIL, params: { logid: newLogID } })
           })
         } else {
-          router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: newLogID } })
+          router.push({ name: WORKOUT_DETAIL, params: { logid: newLogID } })
         }
       }
     }
@@ -105,29 +97,29 @@ const { direction } = useSwipe(target, {
 })
 
 function goToOverview() {
-  // document.startViewTransition(() => {
-  console.log(99)
-  console.log(route.path)
-  // router.push({ name: "LOG_OVERVIEW" })
-  // })
+  if (document.startViewTransition) router.push({ name: WORKOUT_OVERVIEW })
+  else router.push({ name: WORKOUT_OVERVIEW })
 }
 
 function goToMain() {
-  router.push({ name: "WORKOUT_LOG_OVERVIEW" })
+  router.push({ name: WORKOUT_OVERVIEW })
 }
 
-function goToPage(pathx) {
+function goToPage() {
   console.log(89)
-  if (document.startViewTransition)
-    router.push({ name: "WORKOUT_LOG_DETAIL", params: { logid: 2 } })
+  if (document.startViewTransition) router.push({ name: WORKOUT_DETAIL, params: { logid: 2 } })
 }
 </script>
 <template>
   <div
     ref="target"
-    class="z-0 fixed right-0 top-0 h-screen bg-transparent disabled-animate w-16 flex flex-col items-center justify-center space-y-4"
+    class="z-0 fixed right-0 top-0 h-screen bg-transparent disabled-animate w-8 flex flex-col items-center justify-center space-y-4"
   >
-    <router-link to="/workout/log" class="grid grid-cols-2 grid-rows-2 gap-1 w-5 h-5">
+    <router-link
+      to="/workout/log"
+      class="grid grid-cols-2 grid-rows-2 gap-1 w-5 h-5"
+      @touchend="goToOverview"
+    >
       <div
         v-for="index in 4"
         :key="index"

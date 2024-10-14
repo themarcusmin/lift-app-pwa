@@ -12,9 +12,11 @@ export default {
         primaryOrange: "#FD5A00",
         customYellow: "#FBD269",
         customYellowHover: "#FFE8AF",
-        customGray: "#666666",
-        buttonInactive: "#2C2C2C",
-        buttonInactiveBorder: "#BBBBBB"
+        primaryPurple: "#C9A0FF",
+        secondaryPurple: "#8862B7",
+        primaryGray: "#C5C5C5",
+        primaryBg: "#0F1016",
+        secondaryBg: "#232531"
       },
       fontFamily: {
         garamond: ["EB Garamond", "serif"],

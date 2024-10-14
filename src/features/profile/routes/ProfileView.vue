@@ -1,1 +1,3 @@
-<template>profile page: logout</template>
+<template>
+  <div class="bg-primaryBg min-h-screen text-white">profile page: logout</div>
+</template>
