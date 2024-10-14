@@ -1,57 +1,26 @@
-<script setup lang="ts">
-import router from "@/router"
-
-function handleNavigation(event) {
-  console.log("heere: ", event)
-
-  // Store the click position
-  const x = event.clientX
-  const y = event.clientY
-
-  // Get the distance to the furthest corner
-  const endRadius = Math.hypot(
-    Math.max(x, window.innerWidth - x),
-    Math.max(y, window.innerHeight - y)
-  )
-
-  // Start the view transition
-  const transition = document.startViewTransition(() => {
-    router.push({ name: "WORKOUT_HOME" })
-    console.log("9999")
-  })
-
-  // Wait for the pseudo-elements to be created
-  transition.ready.then(() => {
-    // Animate the new view
-    document.documentElement.animate(
-      {
-        clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
-      },
-      {
-        duration: 500,
-        easing: "ease-in",
-        pseudoElement: "::view-transition-new(root)"
-      }
-    )
-  })
-}
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="min-h-screen text-white bg-primaryBg">
-    <div>program page: show active program, create program,</div>
-    <button @click="handleNavigation">test</button>
+  <div class="h-screen z-40 overflow-hidden text-white py-12 bg-primaryBg">
+    <h1 class="mx-8 mb-6 text-2xl font-bold">Program</h1>
+    <div>
+      <div class="py-5 px-8 bg-secondaryBg text-primaryPurple flex justify-between">
+        <div class="">Active Program</div>
+      </div>
+      <div class="p-4 text-neutral-400">You don't have an active workout program.</div>
+      <!-- <RouterLink
+        to="/workout/log"
+        class="flex items-center border-b-2 border-neutral-500 py-4 px-6 gap-6"
+      >
+        <p class="text-lg">Push, Pull, Leg</p>
+      </RouterLink> -->
+    </div>
+    <RouterLink to="/program/create">
+      <div
+        class="text-purple-900 bg-primaryPurple font-semibold h-12 w-full flex items-center justify-center"
+      >
+        Create Program
+      </div>
+    </RouterLink>
   </div>
 </template>
-
-<style>
-::view-transition-image-pair(root) {
-  isolation: auto;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-</style>

@@ -1,6 +1,7 @@
 import MainLayout from "@/components/Layouts/MainLayout.vue"
 
 const ProgramHomeView = () => import("@/features/program/routes/ProgramHomeView.vue")
+const ProgramCreateView = () => import("@/features/program/routes/ProgramCreateView.vue")
 
 const WorkoutHomeView = () => import("@/features/workout/routes/WorkoutHomeView.vue")
 const WorkoutOverviewView = () => import("@/features/workout/routes/WorkoutOverviewView.vue")
@@ -8,8 +9,11 @@ const WorkoutDetailView = () => import("@/features/workout/routes/WorkoutDetailV
 
 const ProfileView = () => import("@/features/profile/routes/ProfileView.vue")
 
-export const PROFILE = "PROFILE"
 export const PROGRAM_HOME = "PROGRAM_HOME"
+export const PROGRAM_CREATE = "PROGRAM_CREATE"
+
+export const PROFILE = "PROFILE"
+
 export const WORKOUT_HOME = "WORKOUT_HOME"
 export const WORKOUT_DETAIL = "WORKOUT_DETAIL"
 export const WORKOUT_OVERVIEW = "WORKOUT_OVERVIEW"
@@ -36,6 +40,11 @@ export const privatePaths = [
     path: "/program",
     name: PROGRAM_HOME,
     component: ProgramHomeView
+  },
+  {
+    path: "/program/create",
+    name: PROGRAM_CREATE,
+    component: ProgramCreateView
   },
   {
     path: "/profile",

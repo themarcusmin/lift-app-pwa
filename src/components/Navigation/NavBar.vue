@@ -84,12 +84,12 @@ function createRipple(event: MouseEvent) {
   }, 600) // Match this duration with your CSS animation duration
 }
 
-function getFill(routeName: string) {
-  return route.name === routeName ? "fill-purple-500" : "fill-neutral-400"
+function getFill(routeTo: string) {
+  return route.path.startsWith(routeTo) ? "fill-purple-500" : "fill-neutral-400"
 }
 
-function getTextColor(routeName: string) {
-  return route.name === routeName ? "text-purple-500" : "text-neutral-400"
+function getTextColor(routeTo: string) {
+  return route.path.startsWith(routeTo) ? "text-purple-500" : "text-neutral-400"
 }
 </script>
 <template>
@@ -112,9 +112,9 @@ function getTextColor(routeName: string) {
         <component
           :is="navItem.icon"
           class="w-10 h-10 fill-neutral-500"
-          :class="getFill(navItem.routeName)"
+          :class="getFill(navItem.to)"
         />
-        <div class="text-xs" :class="getTextColor(navItem.routeName)">{{ navItem.label }}</div>
+        <div class="text-xs" :class="getTextColor(navItem.to)">{{ navItem.label }}</div>
       </RouterLink>
     </div>
   </Disclosure>
