@@ -24,8 +24,10 @@ function handleCloseModal() {
 <template>
   <div v-if="showModal" class="fixed inset-0 flex items-center justify-center z-50">
     <div class="fixed inset-0 bg-black opacity-50" @click="closeModal"></div>
-    <div :class="clsx('shadow-lg z-10', customClass)">
-      <div class="py-2 px-4 flex items-center justify-between border-b-2 border-neutral-600">
+    <div :class="clsx('shadow-lg z-20', customClass)">
+      <div
+        class="sticky top-0 z-20 py-2 px-4 flex items-center justify-between border-b-2 border-neutral-600 bg-inherit"
+      >
         <h2 class="text-lg font-semibold text-center flex-grow">{{ title }}</h2>
         <button @click="handleCloseModal">
           <CloseIcon class="w-10 h-10" />

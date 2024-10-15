@@ -6,7 +6,9 @@ import EditIcon from "@/assets/editIcon.svg"
 import DeleteIcon from "@/assets/trashIcon.svg"
 import ChevronDownIcon from "@/assets/chevronDown.svg"
 import ChevronRightIcon from "@/assets/chevronRight.svg"
+
 import Modal from "@/components/Modal/Modal.vue"
+import ExerciseList from "@/features/exercise/components/ExerciseList.vue"
 
 const program = ref({
   programName: "Andy's Program",
@@ -14,7 +16,7 @@ const program = ref({
     {
       temp_id: 1101,
       name: "Push Day",
-      isHidden: false,
+      isHidden: true,
       programExercise: [
         {
           id: 111,
@@ -72,7 +74,7 @@ const program = ref({
           exerciseID: 1,
           exerciseName: "Pull Ups",
           format: "reps",
-          isHidden: false,
+          isHidden: true,
           restTime: 120,
           programEntries: [
             {
@@ -166,37 +168,11 @@ function toggleVisibility(prop: any) {
 }
 
 import { useModalStore } from "@/stores/modal"
+import { storeToRefs } from "pinia"
 
 const modalStore = useModalStore()
-const { openModal, closeModal } = modalStore
-
-const exercises = [
-  {
-    muscleGroup: "Chest",
-    categoryExercises: [
-      { exerciseID: 101, name: "Barbell Bench Press", format: "reps and weight" },
-      { exerciseID: 102, name: "Dumbbell Bench Press", format: "reps and weight" },
-      { exerciseID: 103, name: "Machine Bench Press", format: "reps and weight" },
-      { exerciseID: 104, name: "Pec Deck", format: "reps and weight" }
-    ]
-  },
-  {
-    muscleGroup: "Leg",
-    categoryExercises: [{ exerciseID: 105, name: "Squat", format: "reps and weight" }]
-  }
-]
-
-// https://colorkit.co/palette/eb3040-eb6949-eb8d27-988921-85ab71-5e8d6f-58b69e-c87499-cb4d8e/
-function getCategoryBgColor(category: string) {
-  switch (category) {
-    case "Chest":
-      return "bg-orangeRed" // Example: red for chest
-    case "Leg":
-      return "bg-pastelBlue" // Example: green for legs
-    default:
-      return "bg-gray-400" // Default color if no match
-  }
-}
+const { openModal } = modalStore
+const { showModal } = storeToRefs(modalStore)
 
 const selectedProgramDayID = ref<number | null>(null)
 
@@ -204,55 +180,14 @@ function handleAddExercise(temp_id) {
   selectedProgramDayID.value = temp_id
   openModal()
 }
-
-function handleSelectExercise(exercise) {
-  // Find the program day with the selected temp_id
-  const dayToUpdate = program.value.programDay.find(
-    (day) => day.temp_id === selectedProgramDayID.value
-  )
-
-  if (dayToUpdate) {
-    const newExercise = {
-      id: Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000, // Generate a random ID
-      exerciseID: exercise.exerciseID,
-      exerciseName: exercise.name,
-      format: exercise.format,
-      isHidden: false,
-      restTime: 120,
-      programEntries: []
-    }
-
-    // Push the new exercise into the programExercise array
-    dayToUpdate.programExercise.push(newExercise)
-
-    // Close the modal
-    closeModal()
-  }
-}
 </script>
 
 <template>
   <Modal
     title="Add Exercise"
-    customClass="h-screen w-full mt-40 bg-secondaryBg border-2 border-neutral-600 text-white rounded-xl"
+    customClass="h-screen overflow-scroll w-full mt-40 bg-primaryBg border-2 border-neutral-600 text-white rounded-xl"
   >
-    <div v-for="(exerciseGroup, categoryIndex) in exercises" :key="categoryIndex">
-      <div
-        :class="
-          clsx('py-3 px-6 rounded-lg font-semibold', getCategoryBgColor(exerciseGroup.muscleGroup))
-        "
-      >
-        {{ exerciseGroup.muscleGroup }}
-      </div>
-      <div v-for="exercise in exerciseGroup.categoryExercises" :key="exercise.exerciseID">
-        <button
-          @click="handleSelectExercise(exercise)"
-          class="w-full py-4 px-6 border-b-2 border-neutral-700 flex items-center"
-        >
-          {{ exercise.name }}
-        </button>
-      </div>
-    </div>
+    <ExerciseList :program="program" :selectedProgramDayID="selectedProgramDayID" />
   </Modal>
   <div class="min-h-screen z-40 overflow-hidden text-white py-12 px-6 bg-primaryBg">
     <div

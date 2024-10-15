@@ -17,8 +17,9 @@ export default {
         primaryGray: "#C5C5C5",
         primaryBg: "#0F1016",
         secondaryBg: "#232531",
-        pastelBlue: "#9CA5DB",
-        orangeRed: "#EB6949"
+        vibrantAzure: "#4C60DF",
+        orangeRed: "#EB6949",
+        goldenYellow: "#FDC93A"
       },
       fontFamily: {
         garamond: ["EB Garamond", "serif"],
