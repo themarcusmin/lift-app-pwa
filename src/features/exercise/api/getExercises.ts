@@ -20,7 +20,7 @@ export const useExercises = ({ config }: UseExercisesOptions = {}) => {
     queryKey: ["exercises"],
     queryFn: () => getExercises(),
     select: (data) => {
-      return data.muscleGroups.map((muscleGroup) => ({
+      return data.exercises.map((muscleGroup) => ({
         ...muscleGroup,
         exercises: muscleGroup.exercises.map((exercise) => ({
           ...exercise,

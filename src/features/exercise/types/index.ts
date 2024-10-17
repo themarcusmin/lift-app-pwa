@@ -12,11 +12,11 @@ interface Exercise {
   subExercisesHidden?: boolean
 }
 
-interface MuscleGroup {
+export interface MuscleGroup {
   muscle: string
   exercises: Exercise[]
 }
 
 export interface ExercisesResponse {
-  muscleGroups: MuscleGroup[]
+  exercises: MuscleGroup[]
 }

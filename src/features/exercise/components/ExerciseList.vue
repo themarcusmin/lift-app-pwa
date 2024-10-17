@@ -7,11 +7,11 @@ import { storeToRefs } from "pinia"
 import { useModalStore } from "@/stores/modal"
 
 const modalStore = useModalStore()
-const { showModal } = storeToRefs(modalStore)
 const { closeModal } = modalStore
 
 import { defineProps, toRefs, ref, watch, toRaw } from "vue"
-import { useExercises } from "@/features/exercise/api/getExercises"
+import { useExerciseStore } from "@/stores/exercise"
+import type { MuscleGroup } from "../types"
 
 const props = defineProps({
   program: Object,
@@ -63,16 +63,13 @@ function handleSelectExercise(exercise) {
   }
 }
 
-const { data, isLoading } = useExercises({
-  config: {
-    enabled: showModal
-  }
-})
+const exerciseStore = useExerciseStore()
+const { exerciseListData } = storeToRefs(exerciseStore)
 
-const exercises = ref([])
+const exercises = ref<MuscleGroup[]>([])
 
 watch(
-  data,
+  exerciseListData,
   (newData) => {
     if (newData) {
       exercises.value = JSON.parse(JSON.stringify(toRaw(newData)))
@@ -120,7 +117,7 @@ watch(
       >
         <div
           v-for="subExercise in exercise.subExercises"
-          :key="subExercise.exerciseId"
+          :key="subExercise.exerciseID"
           class="py-4 px-8 border-b-2 border-neutral-700"
         >
           {{ subExercise.exerciseName }}
